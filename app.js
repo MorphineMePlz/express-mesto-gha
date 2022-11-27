@@ -5,13 +5,12 @@ const router = require('./routes/users');
 // eslint-disable-next-line import/no-unresolved
 const routerCards = require('./routes/cards');
 
+const { notFound } = require('./controllers/NotFound');
+
 const { PORT = 3000 } = process.env;
 
 const app = express();
 app.use(express.json());
-app.use('/users', router);
-app.use('/cards', routerCards);
-
 app.use((req, res, next) => {
   req.user = {
     _id: '6381e9741c7f7dce04ae362d',
@@ -19,6 +18,9 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/users', router);
+app.use('/cards', routerCards);
+app.use('*', notFound);
 
 async function run() {
   try {
