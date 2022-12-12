@@ -1,4 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
+const bcrypt = require('bcryptjs');
+// const jwt = require('jsonwebtoken');
+// eslint-disable-next-line import/no-unresolved
 const User = require('../models/user');
 
 const {
@@ -39,9 +42,14 @@ module.exports.getUsersById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
+  // eslint-disable-next-line no-undef
+  bcrypt.hash(password, 10).then((hash) => User.create({
+    // eslint-disable-next-line no-undef
+    name, about, avatar, email, password: hash,
+  })
     .then((user) => res.status(STATUS_CREATED).send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -49,7 +57,7 @@ module.exports.createUser = (req, res) => {
       } else {
         res.status(SERVER_ERROR).send({ message: SERVER_ERROR_MESSAGE });
       }
-    });
+    }));
 };
 
 module.exports.updateUser = (req, res) => {
