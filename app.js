@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+
 // eslint-disable-next-line import/no-unresolved
 const router = require('./routes/users');
 // eslint-disable-next-line import/no-unresolved
@@ -17,12 +18,6 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 app.use(express.json());
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '6381e9741c7f7dce04ae362d',
-//   };
-//   next();
-// });
 
 app.post('/signup', createUser);
 app.post('/signin', login);

@@ -7,8 +7,8 @@ const {
 // eslint-disable-next-line import/no-unresolved
 
 router.get('/', getUsers);
+router.get("/me", getUserInfo)
 router.get('/:userId', getUsersById);
-router.get("/users/me", getUserInfo)
 
 
 router.patch('/me', updateUser);
