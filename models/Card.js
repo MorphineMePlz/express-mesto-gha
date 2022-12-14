@@ -10,6 +10,12 @@ const cardSchema = new mongoose.Schema(
     },
     link: {
       type: String,
+      validate: {
+        validator(url) {
+          return validator.isURL(url);
+        },
+        message: 'Incorrect input',
+      },
       required: true,
     },
     owner: {

@@ -7,6 +7,7 @@ const User = require('../models/user');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
+const UnauthorizedError = require("../errors/UnauthorizedError")
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -50,7 +51,15 @@ module.exports.createUser = (req, res, next) => {
               User.findById(user._id)
                 .then((user) => res.status(200).send(user));
             })
-            .catch(next);
+            .catch((err) => {
+              if (err.name === 'ValidationError') {
+                next(new BadRequestError('Введены некорректные данные'));
+              } else if (err.code === 11000) {
+                next(new ConflictError(`${email} уже используется`));
+              } else {
+                next(err);
+              }
+            });
         });
     });
 };
@@ -99,7 +108,10 @@ module.exports.login = (req, res, next) => {
     res.send({ token });
   })
   .catch((err) => {
-    res.status(401).send({ message: err.message });
+    if (err.message === 'IncorrectEmail') {
+      return next(new UnauthorizedError('Неправильные почта или пароль'));
+    }
+    next(err);
   });
 };
 
