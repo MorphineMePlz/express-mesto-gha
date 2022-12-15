@@ -11,6 +11,9 @@ const {
 } = require('./controllers/users');
 
 const notFound = require('./controllers/notFound');
+const {
+  SERVER_ERROR,
+} = require('./utils/constants');
 const auth = require('./middlewares/auth');
 const { validateLogin } = require('./middlewares/validator');
 
@@ -32,7 +35,7 @@ app.use((err, req, res) => {
   res
     .status(status)
     .send({
-      message: status === 500
+      message: status === SERVER_ERROR
         ? 'Ошибка сервера'
         : message,
     });
