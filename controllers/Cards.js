@@ -38,8 +38,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!data.owner.equals(userId)) {
         throw new ForbiddenError('Невозможно удалить');
       }
-      Card.findByIdAndDelete({ _id: req.params.cardId })
-        .orFail(() => new NotFoundError('Невозможно найти'))
+      Card.findByIdAndDelete({ _id: req.params.cardId }).catch(next)
         .then(() => {
           res.send({ message: DELETE_ITEM });
         });
@@ -80,6 +79,15 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .orFail(new NotFoundError('Указанная карточка не найдена'))
-    .then((likesArray) => res.status(STATUS_CREATED).send(likesArray))
-    .catch(next);
+    .populate(['owner', 'likes'])
+    .then((card) => {
+      res.send({ data: card });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Введены некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
 };

@@ -1,9 +1,6 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable no-shadow */
-// eslint-disable-next-line import/no-unresolved
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../models/User');
 const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 const NotFoundError = require('../errors/NotFoundError');
@@ -23,10 +20,9 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     })
-      .then((user) => {
-        User.findById(user._id)
-          .then((user) => res.status(STATUS_CREATED).send(user));
-      })
+      .then(() => res.status(STATUS_CREATED).send({
+        name, about, avatar, email,
+      }))
       .catch((err) => {
         if (err.name === 'ValidationError') {
           next(new BadRequestError('Введены некорректные данные'));
@@ -71,7 +67,7 @@ module.exports.updateUser = (req, res, next) => {
       res.send({ name, about });
     })
     .catch((err) => {
-      if ((err.name === 'ValidationError') || (err.name === 'CastError')) {
+      if ((err.name === 'CastError')) {
         next(new BadRequestError('Введены некорректные данные'));
       } else {
         next(err);
@@ -91,7 +87,7 @@ module.exports.updateAvatar = (req, res, next) => {
       res.send({ avatar });
     })
     .catch((err) => {
-      if ((err.name === 'ValidationError') || (err.name === 'CastError')) {
+      if ((err.name === 'CastError')) {
         next(new BadRequestError('Введены некорректные данные'));
       } else {
         next(err);

@@ -1,8 +1,3 @@
-// eslint-disable-next-line import/extensions
-const NotFoundError = require('../errors/NotFoundError.js');
+const NotFoundError = require('../errors/NotFoundError');
 
-const notFound = () => {
-  throw new NotFoundError('Запрашиваемый ресурс не найден');
-};
-
-module.exports = notFound;
+module.exports.notFoundError = (req, res, next) => next(new NotFoundError('Запрашиваемый ресурс не найден'));
