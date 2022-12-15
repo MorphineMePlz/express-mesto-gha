@@ -2,17 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 
-// eslint-disable-next-line import/no-unresolved
 const router = require('./routes/users');
 
-// eslint-disable-next-line import/no-unresolved
 const routerCards = require('./routes/cards');
 const {
   createUser, login,
 
-} = require('./controllers/Users');
+} = require('./controllers/users');
 
-const { notFound } = require('./controllers/NotFound');
+const notFound = require('./controllers/notFound');
 const auth = require('./middlewares/auth');
 const { validateLogin } = require('./middlewares/validator');
 
