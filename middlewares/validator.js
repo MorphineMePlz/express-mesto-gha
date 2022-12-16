@@ -1,5 +1,4 @@
 const { celebrate, Joi } = require('celebrate');
-const mongoose = require('mongoose');
 const validator = require('validator');
 
 module.exports.validateLogin = celebrate({
@@ -32,13 +31,7 @@ module.exports.validateAvatarUpdate = celebrate({
 module.exports.validateUserId = celebrate({
   params: Joi.object().keys({
     id: Joi.string()
-      .required()
-      .custom((value) => {
-        if (!mongoose.Schema.Types.ObjectId.isValid(value)) {
-          throw new Error('Ошибка валидации. Некорректный ID');
-        }
-        return value;
-      }),
+      .required().hex().length(24),
   }),
 });
 
@@ -59,12 +52,6 @@ module.exports.validateCardCreation = celebrate({
 module.exports.validateCardId = celebrate({
   params: Joi.object().keys({
     cardId: Joi.string()
-      .required()
-      .custom((value) => {
-        if (!mongoose.Schema.Types.ObjectId.isValid(value)) {
-          throw new Error('Ошибка валидации. Некорректный ID');
-        }
-        return value;
-      }),
+      .required().hex().length(24),
   }),
 });

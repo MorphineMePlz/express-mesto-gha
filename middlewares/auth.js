@@ -13,12 +13,12 @@ module.exports = (req, res, next) => {
 
   try {
     payload = jwt.verify(token, 'super-strong-secret');
-  } catch (e) {
+  } catch (err) {
     next(new UnauthorizedError('Ошибка авторизации'));
     return;
   }
 
-  req.user = { _id: payload._id };
+  req.user = payload;
 
   next();
 };

@@ -86,7 +86,7 @@ module.exports.updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if ((err.name === 'CastError')) {
-        next(new BadRequestError('Введены некорректные данные'));
+        next(new BadRequestError('Введены неккорректные данные'));
       } else {
         next(err);
       }
