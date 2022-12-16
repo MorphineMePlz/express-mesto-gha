@@ -21,6 +21,7 @@ module.exports.createUser = (req, res, next) => {
       about: user.about,
       avatar: user.avatar,
       email: user.email,
+      _id: user._id,
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -64,7 +65,7 @@ module.exports.updateUser = (req, res, next) => {
       res.send({ name, about });
     })
     .catch((err) => {
-      if ((err.name === 'CastError')) {
+      if ((err.name === 'ValidationError')) {
         next(new BadRequestError('Введены некорректные данные'));
       } else {
         next(err);
@@ -84,7 +85,7 @@ module.exports.updateAvatar = (req, res, next) => {
       res.send({ avatar });
     })
     .catch((err) => {
-      if ((err.name === 'CastError')) {
+      if ((err.name === 'ValidationError')) {
         next(new BadRequestError('Введены неккорректные данные'));
       } else {
         next(err);
@@ -97,7 +98,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
-      res.cookie('jwt', token, { maxAge: 3600000, httpOnly: true, sameSite: true }).send({ token });
+      res.cookie('jwt', token, { maxAge: 3600000, httpOnly: true, sameSite: true }).json({ message: 'Токен jwt передан в cookie' });
     }).catch((err) => {
       next(err);
     });
