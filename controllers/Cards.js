@@ -38,10 +38,10 @@ module.exports.deleteCard = (req, res, next) => {
       if (!data.owner.equals(userId)) {
         throw new ForbiddenError('Невозможно удалить');
       }
-      Card.findByIdAndDelete({ _id: req.params.cardId }).catch(next)
+      Card.findByIdAndDelete({ _id: req.params.cardId })
         .then(() => {
           res.send({ message: DELETE_ITEM });
-        });
+        }).catch(next);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

@@ -12,27 +12,25 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    })
-      .then(() => res.status(STATUS_CREATED).send({
-        name, about, avatar, email,
-      }))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          next(new BadRequestError('Введены некорректные данные'));
-        } else if (err.code === 11000) {
-          next(new ConflictError(`Данный ${email} уже зарегестрирован`));
-        } else {
-          next(err);
-        }
-      });
-  });
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+    .then((user) => res.status(STATUS_CREATED).send({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      email: user.email,
+    }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        next(new BadRequestError('Введены некорректные данные'));
+      } else if (err.code === 11000) {
+        next(new ConflictError(`Данный ${email} уже существует`));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.getUsersById = (req, res, next) => {
@@ -100,8 +98,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'super-strong-secret', { expiresIn: '7d' });
-      res.cookie('jwt', token, { maxAge: 3600000, httpOnly: true, sameSite: true });
-      res.send({ token });
+      res.cookie('jwt', token, { maxAge: 3600000, httpOnly: true, sameSite: true }).send({ token });
     }).catch((err) => {
       next(err);
     });

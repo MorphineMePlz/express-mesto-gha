@@ -10,7 +10,7 @@ const {
 
 } = require('./controllers/users');
 
-const notFound = require('./controllers/notFound');
+const { notFoundError } = require('./controllers/notFound');
 const {
   SERVER_ERROR,
 } = require('./utils/constants');
@@ -28,7 +28,7 @@ app.post('/signin', validateLogin, login);
 
 app.use('/users', auth, router);
 app.use('/cards', auth, routerCards);
-app.use('*', notFound);
+app.use('*', notFoundError);
 
 app.use((err, req, res) => {
   const { status = 500, message } = err;
