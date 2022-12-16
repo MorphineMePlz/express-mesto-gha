@@ -3,7 +3,6 @@ const UnauthorizedError = require('../errors/UnauthorizedError');
 
 module.exports = (req, res, next) => {
   const token = req.cookies;
-  console.log(token);
   if (!token) {
     next(new UnauthorizedError('Ошибка авторизации'));
     return;
