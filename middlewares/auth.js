@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 module.exports = (req, res, next) => {
-  const token = req.cookies;
+  const token = req.cookies.jwt;
   if (!token) {
     next(new UnauthorizedError('Ошибка авторизации'));
     return;
@@ -17,7 +17,7 @@ module.exports = (req, res, next) => {
     return;
   }
 
-  req.user = payload;
+  req.user = { _id: payload._id };
 
   next();
 };

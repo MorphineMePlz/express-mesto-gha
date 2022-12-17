@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
 
 const router = require('./routes/users');
 
@@ -22,6 +23,7 @@ const { PORT = 3000 } = process.env;
 const app = express();
 app.use(express.json());
 app.use(helmet());
+app.use(cookieParser());
 
 app.post('/signup', validateLogin, createUser);
 app.post('/signin', validateLogin, login);
