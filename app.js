@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
+const { errors } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const router = require('./routes/users');
@@ -36,7 +37,7 @@ app.use('/cards', auth, routerCards);
 app.use('*', notFoundError);
 
 app.use(errorLogger);
-// app.use(errors());
+app.use(errors());
 
 app.use((err, req, res) => {
   const { status = 500, message } = err;
